@@ -12,28 +12,34 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var timeLabel: UILabel!
     
-    var seconds = 0.0
+    var seconds = 0
     var running = false
     var timer = Timer()
+    
+    let formatter = DateComponentsFormatter()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.zeroFormattingBehavior = .pad 
        updateTimeLabel()
     }
     func updateTimeLabel() {
-        seconds = (seconds * 10).rounded() / 10
-        timeLabel.text = "\(seconds)"
+        if let formattedString = formatter.string(from: TimeInterval(seconds)) {
+            timeLabel.text = formattedString
+        }
     }
     @objc func countUp() {
-        seconds += 0.1
+        seconds += 1
         updateTimeLabel()
     }
     func startTimer() {
         if running {
             return
         }
-        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(countUp), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countUp), userInfo: nil, repeats: true)
         running = true
     }
     func stopTimer() {
@@ -42,7 +48,7 @@ class ViewController: UIViewController {
     }
     func resetTimer() {
         stopTimer()
-        seconds = 0.0
+        seconds = 0
         updateTimeLabel()
     }
     @IBAction func buttonHandler(_ sender: UIButton) {
